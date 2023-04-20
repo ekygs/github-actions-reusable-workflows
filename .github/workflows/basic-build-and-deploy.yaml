@@ -1,0 +1,40 @@
+name: "WordPress Base Project Build and Deploy"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Build project
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.base.ref }}
+      - name: Install Node
+        uses: action/setup-node@v3
+        with:
+          node_version: 18
+      - name: Run project build script
+        - name: Building Project
+          run: |
+            if [[ -f ./scripts/build ]]
+            then 
+              ./scripts/build
+              echo "Build complete"
+            else
+              echo "No build script provided"
+              exit 1
+            fi
+
+            if [[ ! -d ./build ]]
+            then
+              echo "'build' folder is expected after running 'build' script"
+              exit 1
+            fi
+          shell: bash
+      - name: Archive build folder
+        uses: actions/upload-artifact@v3
+        with:
+          name: project-build
+          path: build
+
+
+
