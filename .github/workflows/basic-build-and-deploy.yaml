@@ -25,7 +25,6 @@ jobs:
           if [[ -f ./scripts/create-build ]]
           then 
             ./scripts/create-build
-            echo "Build complete"
           else
             echo "No build script provided"
             exit 1
@@ -36,11 +35,31 @@ jobs:
             echo "'build' folder is expected after running 'build' script"
             exit 1
           fi
-
-          echo "Finished build for '${{ github.event.pull_request.base.ref }}' branch"
         shell: bash
       - name: Archive build folder
         uses: actions/upload-artifact@v3
         with:
           name: project-build
           path: build
+  deploy-dev:
+    if: github.repository.ref == 'refs/heads/dev'
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Deploying to development server on branch $GITHUB_REF"
+      - name: Fetch archived build folder
+        uses: actions/download-artifact@v3
+        with:
+          name: project-build
+      - run: ls -l
+  deploy-prod:
+    if: github.repository.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Deploying to production server on branch $GITHUB_REF"
+      - name: Fetch archived build folder
+        uses: actions/download-artifact@v3
+        with:
+          name: project-build
+      - run: ls -l
