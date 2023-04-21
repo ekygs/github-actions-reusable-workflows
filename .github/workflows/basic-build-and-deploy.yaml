@@ -8,6 +8,11 @@ on:
         type: string
         required: false
         default: 18
+      build-script:
+        description: "Script that is to be executed to create 'build' folder"
+        type: string
+        required: false
+        default: ./scripts/create-build
 
 jobs:
   build:
@@ -16,15 +21,15 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          ref: ${{ github.event.pull_request.base.ref }}
+          ref: cc
       - uses: actions/setup-node@v3
         with:
           node-version: ${{ inputs.node-version }}
       - name: Building Project
         run: |
-          if [[ -f ./scripts/build ]]
+          if [[ -f ./scripts/create-build ]]
           then 
-            ./scripts/build
+            ./scripts/create-build
             echo "Build complete"
           else
             echo "No build script provided"
@@ -36,6 +41,8 @@ jobs:
             echo "'build' folder is expected after running 'build' script"
             exit 1
           fi
+
+          echo "Finished build for '${{ github.event.pull_request.base.ref }}' branch"
         shell: bash
       - name: Archive build folder
         uses: actions/upload-artifact@v3
