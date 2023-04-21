@@ -8,11 +8,6 @@ on:
         type: string
         required: false
         default: 18
-      build-script:
-        description: "Script that is to be executed to create 'build' folder"
-        type: string
-        required: false
-        default: ./scripts/create-build
 
 jobs:
   build:
