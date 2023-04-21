@@ -42,7 +42,8 @@ jobs:
           name: project-build
           path: build
   deploy-dev:
-    if: github.repository.ref == 'refs/heads/dev'
+    name: Deploy to Production
+    if: github.ref == 'refs/heads/dev'
     needs: build
     runs-on: ubuntu-latest
     steps:
@@ -53,7 +54,8 @@ jobs:
           name: project-build
       - run: ls -l
   deploy-prod:
-    if: github.repository.ref == 'refs/heads/main'
+    name: Deploy to Development
+    if: github.ref == 'refs/heads/main'
     needs: build
     runs-on: ubuntu-latest
     steps:
